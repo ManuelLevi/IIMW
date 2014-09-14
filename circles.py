@@ -12,17 +12,26 @@ def get_vertical_positions(altura_layer, diametro_tubo, altura_tubo, x_size,z_si
     init_x = -x_size/2
     init_z = -z_size/2
     x_pos = init_x+raio
-    if (layout[0]=="p"):
-        while x_pos+diametro_tubo/2<=x_size/2:
+    if (layout[0]=="p"):        
+        n_col, n_lin, n_tubos = paralelo(diametro_tubo, largura, altura)
+        print n_lin,n_col
+        for col in range(int(n_col)):
             z_pos = init_z+raio
-            while z_pos+diametro_tubo/2<=z_size/2:
+            for lin in range(int(n_lin)):
                 vertical_positions.append([x_pos,altura_layer,z_pos])
                 z_pos = z_pos+diametro_tubo
             x_pos = x_pos+diametro_tubo
         return vertical_positions
     else:
+        n_col, n_lin, n_tubos = hexagonal(diametro_tubo, largura, altura)
+        
+        print 'n_col %s n_lin %s n_tubos %s' % ( n_col , n_lin, n_tubos)
+
         flipflop = True
+
+        #for lin in range(int(n_lin)):
         while x_pos+diametro_tubo/2<=x_size/2:
+
             if (flipflop):
                 z_pos = init_z+raio
             else:
@@ -50,10 +59,9 @@ def add_vertical_layer(diametro_tubo, altura_tubo, x_size,z_size):
     altura_layer=0
     vertical_layers = []
 
-
     vertical_layers.append(get_vertical_positions(altura_layer, diametro_tubo, altura_tubo, x_size, z_size,"w"))
     vertical_layers.append(get_vertical_positions(altura_tubo, diametro_tubo, altura_tubo, x_size, z_size,"p"))
-    vertical_layers.append(get_vertical_positions(altura_tubo*2, diametro_tubo, altura_tubo, x_size, z_size,"w"))
+    
     
     
     raio = diametro_tubo/2
@@ -61,8 +69,6 @@ def add_vertical_layer(diametro_tubo, altura_tubo, x_size,z_size):
     for vertical_layer in vertical_layers:
         n = str(len(vertical_layer))
         text(pos=(0,vertical_layer[0][1],z_size/2), string=n, color=color.orange, depth=0.3, justify='center')
-        
-
         for position in vertical_layer:
             ncolor = color.hsv_to_rgb((ind/len(vertical_layers),1,1))
             x_pos,y_pos,z_pos = position
@@ -72,7 +78,7 @@ def add_vertical_layer(diametro_tubo, altura_tubo, x_size,z_size):
 
 altura_tubo=3
 diametro_tubo = 1.
-largura = 10.
+largura = 20.
 altura = 10.
 layout = "paralelo"
 
